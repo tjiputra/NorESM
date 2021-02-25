@@ -3,19 +3,26 @@
 Experiment environments
 ===================================
 
-After creating a case (see :ref:`experiments`) the environment settings can be modified in  the env_*.xml files contained in the case folder
+After creating a case (see :ref:`experiments`) the environment settings can be modified in  the env_*.xml files and the user_nl_<component> files contained in the case folder
 
 The case folder contains:
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  - **README.case:** File detailing your create_newcase usage. This is a good place for you to keep track of runtime problems and changes. The file contains information about e.g. how the case was created, compset details, grid information and which branch, git commit and model code were used for case creation.
-  - **CaseStatus:** File containing a list of operations done in the current case.
-  - **Buildconf:** Directory containing scripts to generate component namelists and component and utility libraries (e.g., PIO, MCT). *You should never have to edit the contents of this directory*
-  - **SourceMods:** Directory where you can place modified source code. In SourceMods there are subfolders for the different models; cam, clm, cice, micom, mosart and so on . If you want to change the code or add subroutines, you place copies of the fortran files here. 
-  - **user made namelists:** you can place your own namelists for the different models where you can change parameters and model settings and so on (i.e. user\_nl\_cam, user\_nl\_cice, user\_nl\_clm, user\_nl\_micon, user\_nl\_cpl). See details below. 
-  - **CaseDocs:** here you find the namelists containing all the subroutines and parameters used. These files will be modified after rebuild. The details of parameter values and input files are listed in the <component>_in files. *You should never have to edit the contents of this directory*. If you wish to make changes to the <component>_in files, you change the user_nl_<component> and rebuild.
-  - **LockedFiles:** Directory that holds copies of files that should not be changed. *You should never edit the contents of this directory*
-  - **Tools:** Directory containing support utility scripts. 
+- **README.case:** File detailing your create_newcase usage. This is a good place for you to keep track of runtime problems and changes. The file contains information about e.g. how the case was created, compset details, grid information and which branch, git commit and model code were used for case creation.
+
+- **CaseStatus:** File containing a list of operations done in the current case.
+
+- **Buildconf:** Directory containing scripts to generate component namelists and component and utility libraries (e.g., PIO, MCT). *You should never have to edit the contents of this directory*
+
+- **SourceMods:** Directory where you can place modified source code. In SourceMods there are subfolders for the different models; cam, clm, cice, blom, mosart and so on . If you want to change the code or add subroutines, you place copies of the fortran files here. 
+
+- **user made namelists:** you can place your own namelists for the different models where you can change parameters and model settings and so on (i.e. user\_nl\_cam, user\_nl\_cice, user\_nl\_clm, user\_nl\_blom, user\_nl\_cpl). See details below. 
+
+- **CaseDocs:** here you find the namelists containing all the subroutines and parameters used. These files will be modified after rebuild. The details of parameter values and input files are listed in the <component>_in files. *You should never have to edit the contents of this directory*. If you wish to make changes to the <component>_in files, you change the user_nl_<component> and rebuild.
+
+- **LockedFiles:** Directory that holds copies of files that should not be changed. *You should never edit the contents of this directory*
+
+- **Tools:** Directory containing support utility scripts. 
 
 
 Machine specific environment
@@ -130,17 +137,33 @@ Some common configuration settings
  
   - Logical to archive all the produced restart files and not just those at the end of the simulation. Default is FALSE.
   
- 
+Setting up a hybrid simulation
+^^^^^
+Step by step guide for hybrid simulation/restart.
+
+When the case is created and compiled, edit ``env_run.xml``. Below is an example for restart with CMIP6 historical initial conditions::
+
+
+
+    <entry id="RUN_TYPE" value="hybrid">
+    <entry id="RUN_REFDIR" value="path/to/restars">                  # path to restarts
+    <entry id="RUN_REFCASE" value="NHISTfrc2_f09_tn14_20191025">     # experiment name for restart files
+    <entry id="RUN_REFDATE" value="2015-01-01">                      # date of restart files
+    <entry id="RUN_STARTDATE" value="2015-01-01">                    # date in simulation
+    <entry id="GET_REFCASE" value="TRUE">                            # get refcase from outside rundir
+
+If it is not possible to link directly to restarts, copy the restart files and rpointer files to the run directory. Below is example changes to ``env_run.xml``::
+
+
+    <entry id="RUN_TYPE" value="hybrid">
+    <entry id="RUN_REFCASE" value="NHISTfrc2_f09_tn14_20191025">     # Experiment name for restart files
+    <entry id="RUN_REFDATE" value="2015-01-01">                      # date of restart files
+    <entry id="RUN_STARTDATE" value="2015-01-01">                    # date in simulation
+    <entry id="GET_REFCASE" value="FALSE">                           # get refcase from outside rundir
+
+
 User namelists
 ^^^^^^^^^^^^^^
-
-Aerosol diagnostics
--------------------
-Adding::
-
-  history_aerosol = .true. 
-
-to user_nl_cam gives additional 577 variables (+ ca. 13 % CPU-time). For a detailed description of additional aerosol output, please see :ref:`aerosol`
 
 
 Frequency of output
@@ -216,35 +239,32 @@ Note that BLOM uses a different sytax than the rest. In user_nl_blom::
 
 you need to include **set** before the name of the variable and it does not matter what namelist group the valiable belong.
 
+
 Input data
 -----------
 All active and data components use input data sets. A local disk needs DIN_LOC_ROOT to be populated with input data in order to run NorESM. You can make links to the input data sets in the user_nl_<components>. 
 Input data is handled by the build process as follows:
 
-  - The buildnml scripts in Buildconf/ create listings of required component input datasets in the Buildconf/<component>.input_data_list files
+- The buildnml scripts in Buildconf/ create listings of required component input datasets in the Buildconf/<component>.input_data_list files
   
-  - ./case.build checks for the presence of the required input data files in the root directory DIN_LOC_ROOT. If all required data sets are found on local disk, then the build can proceed.
+- ./case.build checks for the presence of the required input data files in the root directory DIN_LOC_ROOT. If all required data sets are found on local disk, then the build can proceed.
   
-  - If any of the required input data sets are not found, the build script will abort and the files that are missing will be listed. At this point, you must obtain the required data from the input data server using check_input_data with the -export option. 
+- If any of the required input data sets are not found, the build script will abort and the files that are missing will be listed. At this point, you must obtain the required data from the input data server using check_input_data with the -export option. 
+
+
+Aerosol diagnostics
+^^^^^^^^^^
+
+The model can be set up to take out AeroCom-specific output, effective forcing estimates, and other additional aerosol output. See :ref:`aerosol_output` for details. 
+
+COSP
+^^^^^^^
+NorESM2 can be run with the CFMIP Observation Simulator Package (COSP) to calculates model cloud diagnostics that can be directly compared with satellite observations from ISCCP, CloudSat, CALIOP, MISR, and MODIS. Please see :ref:`cosp_out` for details.
 
 
 Code modifications
 ^^^^^^^^^^^^^^^^^^^
-
-Including::
-
-  #define AEROFFL 
-  
-to preprocessorDefinitions.h in SourceMods/src.cam/ gives 8 additionally variables (+ ca. 5% CPU-time)
-
-Including::
-
-  #define AEROCOM 
-
-
-to preprocessorDefinitions.h in SourceMods/src.cam/, gives 149 additionally variables (+ ca. 13% CPU-time)
-
-For a detailed description of additional aerosol output, please see :ref:`aerosol`
+If you want to make more subtantial changes to the codes than what is possible by the use of user_nl_<component>, you need to copy the source code (the fortran file you want to modify) to the SourceMods/src.<component> folder in the case directory, then make the modifications needed before building the model. Make sure that you use the source code from the same commit as you used to create the case (for commit details see README.case in the case folder). **Do not change the source code in the <noresm-base> folder!**  
 
 
 Run and archiving time environment

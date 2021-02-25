@@ -3,6 +3,8 @@
 Aerosol diagnostics
 ===================
 
+For utilizing the comparison package described below, NorESM2 should be run with extra aerosol diagnostics and output, i.e. adding history_aerosol = .true. in user_nl_cam and enabling AROFFL and AEROCOM in preprocessorDefinitions.h . For a more detailed description, please see: :ref:`aerosol_output`  
+
 NCL Model Version Comparison package ModIvsModII
 ------------------------------------
 
@@ -12,7 +14,7 @@ ModIvsModII produces plots and global life-cycling data (for use in a table) of 
 
 - Prepare climatological average monthly files of the (up to 4) simulations you want to compare, e.g. by use of the script create-clim.sh 
 
-- Assuming that the simulations have been run with #define AEROCOM & AEROFFL (otherwise only some of the diagnostics will be produced):
+- Assuming that the simulations have been run with *history_aerosol = .true.*  and *#define AEROCOM & AEROFFL* (otherwise only some of the diagnostics will be produced):
 
   - In ModIvsModII.csh (note: read the header info):
   

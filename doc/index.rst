@@ -8,21 +8,20 @@ Welcome to the NorESM2 User's Guide!
 
 The purpose of the NorESM2 User's Guide is to provide a common place for NorESM2 users and developers to share information. E.g. How is the code organised? What tools are used? Which version should be run for what purpose? 
 
+| The NorESM1 version ReadTheDocs can be found here
+| https://noresm-docs.readthedocs.io/en/noresm1/
 
-This is the NorESM2 documentation which is currently being re-organized, under revision.
-
-| The corresponding NorESM2 ReadTheDocs can be found here
-| https://noresm-docs.readthedocs.io/en/noresm2/
-
-If you have any questions or interested in actively participate in the reorganization, create a new issue on github at https://github.com/NorESMhub/NorESM/issues
 
 
 How to contribute
 ------------------
 
-Information on how to contribute to this documentation can be found at 
+If you have any questions or interested in actively participate in the code or documentation, create a new issue on github at https://github.com/NorESMhub/NorESM/issues
+
+Further information on how to contribute to this documentation can be found at 
 https://github.com/NorESMhub/NorESM/blob/master/doc/README.md.
 
+For obtaining news per email register to users@noresm.org at https://www.noresm.org or via this `link <https://www.noresm.org/mailman/listinfo/users_noresm.org>`_.
 
 .. toctree::
    :maxdepth: 2
@@ -31,10 +30,12 @@ https://github.com/NorESMhub/NorESM/blob/master/doc/README.md.
    start.rst
    access/access.rst
    configurations/configurations.rst
+   output/output.rst
    diagnostics/diagnostics.rst
+   model-description/model-description.rst
+   keyruns/keyruns.rst
    data/data.rst
    contribute/contribute.rst
-   model-description/model-description.rst
    faq/faq.rst
    
 
